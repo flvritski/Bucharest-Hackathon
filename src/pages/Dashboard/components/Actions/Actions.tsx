@@ -1,14 +1,5 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import {
-  Row,
-  Col,
-  Image,
-  ListGroup,
-  Card,
-  Button,
-  Form
-} from 'react-bootstrap';
 import { faArrowUp, faArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useGetPendingTransactions } from '@multiversx/sdk-dapp/hooks/transactions/useGetPendingTransactions';
@@ -17,8 +8,26 @@ import { refreshAccount } from '@multiversx/sdk-dapp/utils';
 import moment from 'moment';
 import { contractAddress } from 'config';
 import { useGetTimeToPong, useGetPingAmount } from './helpers';
+import {
+  ESDTTransferPayloadBuilder,
+  TokenIdentifierType,
+  TokenIdentifierValue,
+  TokenPayment,
+  TransactionPayload
+} from '@multiversx/sdk-core/out';
+import {
+  useGetAccountInfo,
+  useGetNetworkConfig
+} from '@multiversx/sdk-dapp/hooks';
+import BigNumber from 'bignumber.js';
+
+export const COLLECTION_TICKER = 'ZGP-e11b25';
 
 export const Actions = () => {
+  const { network } = useGetNetworkConfig();
+
+  const [sessionId, setSessionId] = React.useState<string>('');
+
   const { hasPendingTransactions } = useGetPendingTransactions();
   const getTimeToPong = useGetTimeToPong();
   const pingAmount = useGetPingAmount();
@@ -72,6 +81,42 @@ export const Actions = () => {
   useEffect(() => {
     setSecondsRemaining();
   }, [hasPendingTransactions]);
+
+  ///******===== Stake function ******==== */
+  const sendStakeTokenTransaction = async (
+    tokenId: TokenIdentifierValue,
+    amount: BigNumber
+  ) => {
+    const payment = TokenPayment.fungibleFromAmount(
+      COLLECTION_TICKER,
+      amount,
+      18
+    );
+
+    const stakeTransaction = {
+      data: new TransactionPayload(
+        `ESDTTransfer@${tokenId}@056bc75e2d63100000@7374616b65`
+      ),
+      value: 0,
+      receiver: contractAddress,
+      gasLimit: '600000000',
+      chainID: network.chainId,
+      singleESDTTransfer: payment
+    };
+
+    const { sessionId, error } = await sendTransactions({
+      transactions: stakeTransaction,
+      transactionsDisplayInfo: {
+        processingMessage: 'Processing Ping transaction',
+        errorMessage: 'An error has occured during Ping',
+        successMessage: 'Ping transaction successful'
+      },
+      redirectAfterSign: false
+    });
+    if (sessionId != null) {
+      setTransactionSessionId(sessionId);
+    }
+  };
 
   const sendPingTransaction = async () => {
     const pingTransaction = {
@@ -132,33 +177,22 @@ export const Actions = () => {
       {hasPing !== undefined && (
         <>
           {hasPing && !hasPendingTransactions ? (
-            <div className='action-btn' onClick={sendPingTransaction}>
-              <button className='btn'>
-                <FontAwesomeIcon icon={faArrowUp} className='text-primary' />
-              </button>
-              <a href='/' className='text-white text-decoration-none'>
-                Ping
-              </a>
-              <br></br>
-              <button className='btn'>
+            <div className='action-btn'>
+              <button
+                className='btn'
+                onClick={() =>
+                  sendStakeTokenTransaction(
+                    new TokenIdentifierValue(
+                      '4841434b544f4b454e2d323863393230'
+                    ),
+                    new BigNumber(10)
+                  )
+                }
+              >
                 <FontAwesomeIcon icon={faArrowUp} className='text-primary' />
               </button>
               <a href='/' className='text-white text-decoration-none'>
                 Stake
-              </a>
-              <br></br>
-              <button className='btn'>
-                <FontAwesomeIcon icon={faArrowUp} className='text-primary' />
-              </button>
-              <a href='/' className='text-white text-decoration-none'>
-                Claim
-              </a>
-              <br></br>
-              <button className='btn'>
-                <FontAwesomeIcon icon={faArrowUp} className='text-primary' />
-              </button>
-              <a href='/' className='text-white text-decoration-none'>
-                Unstake
               </a>
             </div>
           ) : (

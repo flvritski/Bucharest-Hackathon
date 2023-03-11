@@ -6,7 +6,8 @@ import {
 } from '@multiversx/sdk-core/out';
 
 import { contractAddress } from 'config';
-import json from 'ping-pong.abi.json';
+// import json from 'ping-pong.abi.json';
+import json from 'dynamic-staking-auto-compound.abi.json';
 
 const abiRegistry = AbiRegistry.create(json);
 const abi = new SmartContractAbi(abiRegistry);
