@@ -139,6 +139,21 @@ export const Actions = () => {
               <a href='/' className='text-white text-decoration-none'>
                 Ping
               </a>
+              <ListGroup>
+                <ListGroup.Item>
+                  <Button>Staking</Button>
+                </ListGroup.Item>
+              </ListGroup>
+              <ListGroup>
+                <ListGroup.Item>
+                  <Button>Claim</Button>
+                </ListGroup.Item>
+              </ListGroup>
+              <ListGroup>
+                <ListGroup.Item>
+                  <Button>Unstake</Button>
+                </ListGroup.Item>
+              </ListGroup>
             </div>
           ) : (
             <>
