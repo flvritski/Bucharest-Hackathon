@@ -139,21 +139,27 @@ export const Actions = () => {
               <a href='/' className='text-white text-decoration-none'>
                 Ping
               </a>
-              <ListGroup>
-                <ListGroup.Item>
-                  <Button>Staking</Button>
-                </ListGroup.Item>
-              </ListGroup>
-              <ListGroup>
-                <ListGroup.Item>
-                  <Button>Claim</Button>
-                </ListGroup.Item>
-              </ListGroup>
-              <ListGroup>
-                <ListGroup.Item>
-                  <Button>Unstake</Button>
-                </ListGroup.Item>
-              </ListGroup>
+              <br></br>
+              <button className='btn'>
+                <FontAwesomeIcon icon={faArrowUp} className='text-primary' />
+              </button>
+              <a href='/' className='text-white text-decoration-none'>
+                Stake
+              </a>
+              <br></br>
+              <button className='btn'>
+                <FontAwesomeIcon icon={faArrowUp} className='text-primary' />
+              </button>
+              <a href='/' className='text-white text-decoration-none'>
+                Claim
+              </a>
+              <br></br>
+              <button className='btn'>
+                <FontAwesomeIcon icon={faArrowUp} className='text-primary' />
+              </button>
+              <a href='/' className='text-white text-decoration-none'>
+                Unstake
+              </a>
             </div>
           ) : (
             <>
